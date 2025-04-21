@@ -160,24 +160,42 @@
     const shareButton = document.getElementById('share')
     shareButton.addEventListener('click', (ev) => {
       console.log('share button was clicked')
-      // TODO redirect to a sharable link by completing the steps below
-
+      
       // 1. get the current state from localStorage
-
+      const items = localStorage.getItem('items');
+      const itemsArray = items ? JSON.parse(items) : [];
+      
       // 2. create a URLSearchParams object from the data you retrieved from localStorage
-
+      const params = new URLSearchParams();
+      params.set('items', JSON.stringify(itemsArray));
+      
       // 3. get the current url from window.location
-
+      const currentUrl = new URL(window.location.href);
+      
       // 4. set the current url's search property to '?' concatenated with: the urlsearchparams object's tostring 
-
+      currentUrl.search = `?${params.toString()}`;
+      
       // 5. update the window.location to the result of the preceding step
+      window.location = currentUrl.toString();
     })
 
     function populateLocalStorageFromURLSeach() {
       console.log('populateLocalStorageFromURLSeach')
-      // TODO update from URL by completing the steps below:
-      // 1. when the page loads, look to see if the url has a querystring that has the kind of data you added to it above
-      // 2. if there is such data in the querystring, replace the state in localStorage with the data in the URL
+      
+      // 1. Get the query parameters from the current URL
+      const params = new URLSearchParams(window.location.search);
+      const itemsParam = params.get('items');
+      
+      // 2. If we have items in the URL, update localStorage with them
+      if (itemsParam) {
+        try {
+          // Parse the items from the URL and store them in localStorage
+          const items = JSON.parse(itemsParam);
+          localStorage.setItem('items', JSON.stringify(items));
+        } catch (error) {
+          console.error('Error parsing items from URL:', error);
+        }
+      }
     }
 
     // initialize the page
